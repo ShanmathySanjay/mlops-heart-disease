@@ -1,9 +1,4 @@
 from fastapi import FastAPI
-import pandas as pd
-
-app = FastAPI()
-
-from fastapi import FastAPI
 import joblib
 import numpy as np
 
@@ -31,16 +26,4 @@ def predict(data: dict):
 
     prediction = model.predict(features)
 
-    return {"prediction": int(prediction[0])}
-
-
-@app.get("/")
-def home():
-    return {"message": "Heart Disease Prediction API"}
-
-
-@app.post("/predict")
-def predict(data: dict):
-    df = pd.DataFrame([data])
-    prediction = model.predict(df)
     return {"prediction": int(prediction[0])}
