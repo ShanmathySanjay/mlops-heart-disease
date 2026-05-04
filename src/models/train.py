@@ -1,3 +1,5 @@
+import os
+
 import mlflow
 import mlflow.sklearn
 import joblib
@@ -17,7 +19,10 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_a
 from src.data.load_data import load_data
 from src.features.preprocess import preprocess_data
 
-mlflow.set_tracking_uri("http://127.0.0.1:5000")
+if os.getenv("CI"):
+    mlflow.set_tracking_uri("file:./mlruns")
+else:
+    mlflow.set_tracking_uri("http://127.0.0.1:5000")
 
 def evaluate_model(name, y_test, preds):
     print(f"\n--- {name} ---")
