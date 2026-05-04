@@ -1,4 +1,4 @@
-import pandas as pd
+from src.data.load_data import load_data
 
 def preprocess_data(df):
     print("Before cleaning:", df.shape)
@@ -21,8 +21,6 @@ def preprocess_data(df):
 
 
 if __name__ == "__main__":
-    from src.data.load_data import load_data
-
     df = load_data()
     X, y = preprocess_data(df)
 

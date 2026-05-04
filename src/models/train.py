@@ -1,6 +1,5 @@
 import mlflow
 import mlflow.sklearn
-import pandas as pd
 import joblib
 
 import matplotlib.pyplot as plt
@@ -17,10 +16,8 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_a
 
 from src.data.load_data import load_data
 from src.features.preprocess import preprocess_data
-from sklearn.model_selection import cross_val_score
 
 mlflow.set_tracking_uri("http://127.0.0.1:5000")
-
 
 def evaluate_model(name, y_test, preds):
     print(f"\n--- {name} ---")
@@ -28,7 +25,6 @@ def evaluate_model(name, y_test, preds):
     print("Precision:", precision_score(y_test, preds))
     print("Recall:", recall_score(y_test, preds))
     print("ROC-AUC:", roc_auc_score(y_test, preds))
-
 
 def train():
     # Load + preprocess
@@ -104,7 +100,6 @@ def train():
 
         # Log as artifact
         mlflow.log_artifact("lr_model.pkl")
-        
 
     # =========================
     # Random Forest
@@ -168,7 +163,6 @@ def train():
 
         # Log as artifact
         mlflow.log_artifact("rf_model.pkl")
-
 
 if __name__ == "__main__":
     train()
