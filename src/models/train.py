@@ -3,6 +3,7 @@ import os
 
 sys.path.append(os.path.abspath("."))
 
+from matplotlib.pylab import rint
 import mlflow
 import mlflow.sklearn
 import joblib
@@ -64,12 +65,15 @@ def train():
         prec = precision_score(y_test, lr_preds)
         rec = recall_score(y_test, lr_preds)
         roc = roc_auc_score(y_test, lr_pipeline.predict_proba(X_test)[:, 1])
+        cv_scores = cross_val_score(lr_pipeline, X, y, cv=5)
 
         print("\n--- Logistic Regression ---")
         print("Accuracy:", acc)
         print("Precision:", prec)
         print("Recall:", rec)
         print("ROC-AUC:", roc)
+        print("Cross-val mean:", cv_scores.mean())
+        print("Cross-val std:", cv_scores.std())
 
         # Log params
         mlflow.log_param("model", "LogisticRegression")
@@ -80,8 +84,6 @@ def train():
         mlflow.log_metric("precision", prec)
         mlflow.log_metric("recall", rec)
         mlflow.log_metric("roc_auc", roc)
-        cv_scores = cross_val_score(lr_pipeline, X, y, cv=5)
-
         mlflow.log_metric("cv_mean", cv_scores.mean())
         mlflow.log_metric("cv_std", cv_scores.std())
 
@@ -130,12 +132,15 @@ def train():
         prec = precision_score(y_test, rf_preds)
         rec = recall_score(y_test, rf_preds)
         roc = roc_auc_score(y_test, rf_pipeline.predict_proba(X_test)[:, 1])
+        cv_scores = cross_val_score(rf_pipeline, X, y, cv=5)
 
         print("\n--- Random Forest ---")
         print("Accuracy:", acc)
         print("Precision:", prec)
         print("Recall:", rec)
         print("ROC-AUC:", roc)
+        print("Cross-val mean:", cv_scores.mean())
+        print("Cross-val std:", cv_scores.std())
 
         # Log params
         mlflow.log_param("model", "RandomForest")
@@ -146,8 +151,6 @@ def train():
         mlflow.log_metric("precision", prec)
         mlflow.log_metric("recall", rec)
         mlflow.log_metric("roc_auc", roc)
-        cv_scores = cross_val_score(rf_pipeline, X, y, cv=5)
-
         mlflow.log_metric("cv_mean", cv_scores.mean())
         mlflow.log_metric("cv_std", cv_scores.std())
 
