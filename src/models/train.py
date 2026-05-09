@@ -3,7 +3,6 @@ import os
 
 sys.path.append(os.path.abspath("."))
 
-from matplotlib.pylab import rint
 import mlflow
 import mlflow.sklearn
 import joblib
