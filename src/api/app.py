@@ -2,7 +2,6 @@ import logging
 import pandas as pd
 from fastapi import FastAPI
 import joblib
-import numpy as np
 from prometheus_client import Counter, generate_latest
 from fastapi.responses import Response
 
