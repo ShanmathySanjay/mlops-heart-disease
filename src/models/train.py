@@ -10,7 +10,7 @@ import joblib
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, roc_curve
 
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
@@ -80,6 +80,10 @@ def train():
         mlflow.log_metric("precision", prec)
         mlflow.log_metric("recall", rec)
         mlflow.log_metric("roc_auc", roc)
+        cv_scores = cross_val_score(lr_pipeline, X, y, cv=5)
+
+        mlflow.log_metric("cv_mean", cv_scores.mean())
+        mlflow.log_metric("cv_std", cv_scores.std())
 
         # Confusion Matrix
         cm = confusion_matrix(y_test, lr_preds)
@@ -142,6 +146,10 @@ def train():
         mlflow.log_metric("precision", prec)
         mlflow.log_metric("recall", rec)
         mlflow.log_metric("roc_auc", roc)
+        cv_scores = cross_val_score(rf_pipeline, X, y, cv=5)
+
+        mlflow.log_metric("cv_mean", cv_scores.mean())
+        mlflow.log_metric("cv_std", cv_scores.std())
 
         # Confusion Matrix
         cm = confusion_matrix(y_test, rf_preds)
