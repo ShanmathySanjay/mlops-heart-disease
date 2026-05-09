@@ -27,7 +27,6 @@ jobs:
         pytest tests/ -v
 
     - name: Train model
-      working-directory: mlops-heart-disease
       run: |
         python src/models/train.py
 
@@ -43,7 +42,7 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/heart-api:${{ github.sha }} ./mlops-heart-disease
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/heart-api:${{ github.sha }} .
 
     - name: Push Docker image
       run: |
