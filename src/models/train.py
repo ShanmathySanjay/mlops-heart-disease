@@ -192,7 +192,7 @@ def train():
 
         # Log best model to MLflow
         mlflow.set_experiment("Best Model Selection")
-        with mlflow.start_run(run_name="Best Model"):
+        with mlflow.start_run(run_name="Best Model", nested=True):
             mlflow.log_param("best_model", best_model_name)
             mlflow.log_metric("best_roc_auc", best_score)
             mlflow.log_artifact("model.pkl")
