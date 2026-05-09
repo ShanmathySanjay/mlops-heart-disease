@@ -28,6 +28,7 @@ jobs:
 
     - name: Train model
       run: |
+        PYTHONPATH=. python src/models/train.py
         python src/models/train.py
 
     - name: Verify model exists
