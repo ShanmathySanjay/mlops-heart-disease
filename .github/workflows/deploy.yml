@@ -28,7 +28,7 @@ jobs:
 
     - name: Train model
       run: |
-        python train.py
+        python /src/models/train.py
 
     - name: Verify model exists
       run: |
