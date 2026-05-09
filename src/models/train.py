@@ -35,7 +35,7 @@ def evaluate_model(name, y_test, preds):
     print("ROC-AUC:", roc_auc_score(y_test, preds))
 
 def train():
-    print('Preprocess Data')
+    print('Load + Preprocess Data')
     # Load + preprocess
     df = load_data()
     X, y = preprocess_data(df)
