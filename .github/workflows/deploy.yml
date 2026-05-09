@@ -43,7 +43,7 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/heart-api:${{ github.sha }} .
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/heart-api:${{ github.sha }} ./mlops-heart-disease
 
     - name: Push Docker image
       run: |
