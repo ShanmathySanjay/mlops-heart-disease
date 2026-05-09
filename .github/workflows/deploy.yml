@@ -27,8 +27,9 @@ jobs:
         pytest tests/ -v
 
     - name: Train model
+      working-directory: mlops-heart-disease
       run: |
-        python /src/models/train.py
+        python src/models/train.py
 
     - name: Verify model exists
       run: |
