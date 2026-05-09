@@ -60,7 +60,7 @@ def train():
         acc = accuracy_score(y_test, lr_preds)
         prec = precision_score(y_test, lr_preds)
         rec = recall_score(y_test, lr_preds)
-        roc = roc_auc_score(y_test, lr_preds)
+        roc = roc_auc_score(y_test, lr_pipeline.predict_proba(X_test)[:, 1])
 
         print("\n--- Logistic Regression ---")
         print("Accuracy:", acc)
@@ -122,7 +122,7 @@ def train():
         acc = accuracy_score(y_test, rf_preds)
         prec = precision_score(y_test, rf_preds)
         rec = recall_score(y_test, rf_preds)
-        roc = roc_auc_score(y_test, rf_preds)
+        roc = roc_auc_score(y_test, rf_pipeline.predict_proba(X_test)[:, 1])
 
         print("\n--- Random Forest ---")
         print("Accuracy:", acc)
@@ -168,6 +168,34 @@ def train():
 
         # Log as artifact
         mlflow.log_artifact("rf_model.pkl")
+
+        # =========================
+        # Model Selection
+        # =========================
+
+        print("\nSelecting best model based on ROC-AUC...")
+
+        # Compare models
+        models = {
+            "LogisticRegression": (lr_pipeline, roc_auc_score(y_test, lr_preds)),
+            "RandomForest": (rf_pipeline, roc_auc_score(y_test, rf_preds))
+        }
+
+        best_model_name = max(models, key=lambda x: models[x][1])
+        best_model, best_score = models[best_model_name]
+
+        print(f"Best model: {best_model_name} with ROC-AUC: {best_score}")
+
+        # Save final model
+        joblib.dump(best_model, "model.pkl")
+        print("Best model saved as model.pkl")
+
+        # Log best model to MLflow
+        mlflow.set_experiment("Best Model Selection")
+        with mlflow.start_run(run_name="Best Model"):
+            mlflow.log_param("best_model", best_model_name)
+            mlflow.log_metric("best_roc_auc", best_score)
+            mlflow.log_artifact("model.pkl")
 
 if __name__ == "__main__":
     train()

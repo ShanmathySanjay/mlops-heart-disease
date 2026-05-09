@@ -13,6 +13,27 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install pytest flake8
+
+    - name: Lint code
+      run: |
+        flake8 .
+
+    - name: Run tests
+      run: |
+        pytest tests/ -v
+
+    - name: Train model
+      run: |
+        python train.py
+
+    - name: Verify model exists
+      run: |
+        ls -lh *.pkl
+
     - name: Login to DockerHub
       uses: docker/login-action@v2
       with:
@@ -21,13 +42,13 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/heart-api:latest .
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/heart-api:${{ github.sha }} .
 
     - name: Push Docker image
       run: |
-        docker push ${{ secrets.DOCKER_USERNAME }}/heart-api:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/heart-api:${{ github.sha }}
 
-    - name: Deploy to EC2
+    - name: Deploy to EC2 (use SAME image)
       uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.EC2_HOST }}
@@ -36,13 +57,10 @@ jobs:
         script: |
           export KUBECONFIG=~/.kube/config
 
-          echo "Restarting deployment..."
-          kubectl rollout restart deployment heart-api-deployment
+          kubectl set image deployment heart-api-deployment \
+            heart-api=${{ secrets.DOCKER_USERNAME }}/heart-api:${{ github.sha }}
 
-          echo "Waiting for rollout to complete..."
           kubectl rollout status deployment heart-api-deployment --timeout=180s
-
-          echo "Verifying pod is ready..."
           kubectl wait --for=condition=ready pod -l app=heart-api --timeout=120s
 
-            echo "Deployment successful!!"
+          echo "Deployment successful!!"
