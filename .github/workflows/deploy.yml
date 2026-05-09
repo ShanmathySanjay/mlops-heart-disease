@@ -42,8 +42,7 @@ jobs:
           echo "Waiting for rollout to complete..."
           kubectl rollout status deployment heart-api-deployment --timeout=180s
 
-          echo "Checking pod status..."
-          kubectl get pods -l app=heart-api
+          echo "Verifying pod is ready..."
+          kubectl wait --for=condition=ready pod -l app=heart-api --timeout=120s
 
-          echo "Verifying all pods are Running..."
-          kubectl get pods -l app=heart-api | grep -v Running && exit 1 || echo "Deployment successful"
+            echo "Deployment successful!!"
