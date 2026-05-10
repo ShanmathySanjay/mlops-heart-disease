@@ -97,6 +97,6 @@ pytest tests/
 
 ## Deployment
 
-* API: http://<EC2-IP>/docs
-* Prometheus: http://<EC2-IP>:30009
-* Grafana: http://<EC2-IP>:30010
+* API: http://EC2-IP/docs
+* Prometheus: http://EC2-IP:30009
+* Grafana: http://EC2-IP:30010
