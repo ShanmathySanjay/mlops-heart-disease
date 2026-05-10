@@ -1,120 +1,102 @@
 # Heart Disease Prediction API (MLOps Project)
 
-## Overview
-This project implements an end-to-end MLOps pipeline for predicting heart disease using machine learning.  
-It includes data processing, model training, CI/CD automation, containerization, Kubernetes deployment, and monitoring.
+An end-to-end MLOps pipeline for predicting heart disease, covering model training, CI/CD, deployment, and monitoring.
+
+
+## Links
+- Report: [Assignment Report](Assignment_Report.pdf)  
+- Demo: https://drive.google.com/file/d/1wqkRPKkklxRqb8Sl096AhdB8Pzri8gwO/view?usp=drive_link
+- Repo: https://github.com/ShanmathySanjay/mlops-heart-disease
+
 
 ## Tech Stack
-- Python, FastAPI, Uvicorn
-- Scikit-learn (ML models)
-- MLflow (experiment tracking)
-- Docker, DockerHub
-- Kubernetes (K3s on AWS EC2)
-- GitHub Actions (CI/CD)
-- Prometheus & Grafana (Monitoring)
+Python, FastAPI, Scikit-learn, MLflow, Docker, DockerHub, Kubernetes (K3s), GitHub Actions, Prometheus, Grafana, AWS EC2
+
 
 ## Dataset
-Dataset Source:
-UCI Heart Disease Dataset
-https://archive.ics.uci.edu/dataset/45/heart+disease
-
-Subset used:
-processed.cleveland.data
-
-### Setup
-Place dataset in:
-
+- UCI Heart Disease Dataset  
+- Place file at:
+```
 data/heart.csv
+````
 
-## EDA & Preprocessing
-- Missing values handled
-- Feature scaling using StandardScaler
-- Exploratory analysis:
-  - Correlation heatmap
-  - Class balance
-  - Feature distributions
+## Setup
 
-## Model Development
-Two models trained:
-- Logistic Regression
-- Random Forest
+``` 
+git clone https://github.com/ShanmathySanjay/mlops-heart-disease.git
+cd mlops-heart-disease
+pip install -r requirements.txt
+```
 
-### Evaluation Metrics:
-- Accuracy
-- Precision
-- Recall
-- ROC-AUC
+## Train model
 
-### Model Selection:
-Best model selected automatically based on ROC-AUC score and saved as:
+```
+PYTHONPATH=. python src/models/train.py
+```
 
-model.pkl
+### Run API
 
-## Experiment Tracking
-MLflow used to track:
-- Parameters
-- Metrics
-- Artifacts (plots, models)
+```bash
+uvicorn src.api.app:app --reload
+```
 
-## CI/CD Pipeline
+Swagger: [http://localhost:8000/docs](http://localhost:8000/docs)
 
-Pipeline steps:
-1. Lint code (flake8)
-2. Run unit tests (pytest)
-3. Train models
-4. Select best model
-5. Save model.pkl
-6. Build Docker image
-7. Push to DockerHub (commit SHA tagged)
-8. Deploy to Kubernetes (EC2)
+
+## MLflow
+
+```bash
+mlflow ui
+```
+
+[http://127.0.0.1:5000](http://127.0.0.1:5000)
+
 
 ## Docker
 
-### Build
-
+```bash
 docker build -t heart-api .
-
-### Run
-
 docker run -p 8000:8000 heart-api
+```
 
+## Kubernetes
 
-## Kubernetes Deployment
-
-Apply:
-
+```bash
 kubectl apply -f k8s-deployment.yaml
-
 kubectl apply -f ingress.yaml
-
 kubectl apply -f prometheus.yaml
-
 kubectl apply -f grafana.yaml
+```
 
+## API
 
-## API Endpoints
+**POST /predict**
 
-| Endpoint   | Description        |
-|------------|--------------------|
-| `/docs`    | Swagger UI         |
-| `/predict` | Prediction API     |
-| `/metrics` | Metrics |
+```json
+{
+  "features": [60, 1, 3, 140, 260, 1, 2, 120, 1, 2.5, 1, 2, 3]
+}
+```
 
 
 ## Monitoring
-- Prometheus scrapes `/metrics`
-- Grafana dashboards visualize performance
 
+* Prometheus → `/metrics`
+* Grafana → dashboards
+* Query:
 
-## Testing
+```
+rate(request_count_total[1m])
+```
 
-Run:
+## Tests
 
+```bash
 pytest tests/
+```
 
+## Deployment
 
-## Deployment URLs
-
-- API: http://<EC2-IP>/docs  
-- Prometheus: http://<EC2-IP>:30009  
-- Grafana: http://<EC2-IP>:30010  
+* API: http://<EC2-IP>/docs
+* Prometheus: http://<EC2-IP>:30009
+* Grafana: http://<EC2-IP>:30010
